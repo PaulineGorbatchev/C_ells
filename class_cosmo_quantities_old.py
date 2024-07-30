@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from scipy.integrate import quad
 from scipy import interpolate
 from scipy.misc import derivative
-from function_z import calculate_integrand, calculate_D1
+#from function_z import calculate_integrand, calculate_D1
 from functools import partial
 import camb
 
@@ -106,13 +106,6 @@ class cosmo_quantities:
         I = self.calculate_Omega_mz() * self.calculate_D1()
         return I
 
-    import numpy as np
-
-
-
-
-
-
 
 if __name__ == '__main__':
     Omega_m = 0.31
@@ -120,6 +113,7 @@ if __name__ == '__main__':
     H_0 = 67.66
     z_min = 0
     z_max = 10
+    
     z = np.linspace(z_min, z_max, 100)
 
     my_cosmo = cosmo_quantities(z, Omega_m, H_0, Omega_Lambda)

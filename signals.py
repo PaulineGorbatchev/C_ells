@@ -31,43 +31,66 @@ class Signals(cosmo_quantities):
     def Cells_new(self):
         pass
     
-    def Cell1_new(self):
+    def Cells_DD(self, which_pop = 'default'):
+        """
+        Compute and return the Cell's for the different combinations of populations at different redshifts.
 
-        b1 = self.bias_B * self.s8(self.z)
-        b2 = self.bias_F * self.s8(self.z)
-        
-        product = np.outer(b1, b2)
-        
-        # Create a mask for the upper triangle including the diagonal
-        mask = np.triu(np.ones_like(product), k=0).astype(bool)
-        factor_z = product[mask]
+        This method computes Cell's using the bias vectors of two populations,
+        calculates the outer product of each pair of bias vectors, and then applies an upper
+        triangle mask to these products, removing repeated elements. 
+        Finally, it scales the resulting values by the corresponding alpha integral and stores them in an output array.
 
-        alpha1 = self.alphas['alpha_1']
-        
-        # Scale factor_z by alpha1 and create the final result
-        result = alpha1[np.newaxis,:] * factor_z[:,np.newaxis]
-        
-        return result
+        Parameters
+        ----------
+        which_pop : str or list of tuples, optional
+            Specifies the population pairs for which to compute the Cell combinations.
+            If 'default', uses all combinations with replacement of `self.pop` (default is 'default').
 
-    def Cell1_new_alt(self, which_pop = 'default'):
+        Returns
+        -------
+        np.ndarray
+            A 3D NumPy array of shape (num_combs, num_z_combinations, alpha_length),
+            where:
+            - `num_combs` is the number of population pairs.
+            - `num_z_combinations` is the number of redshift bin combinations.
+            - `alpha_length` is the length of the alpha integral (`self.alphas['alpha_1']`).
+
+            Each element `Cell_combs[i, j, k]` represents the scaled value of the `j`-th element
+            in the upper triangle of the outer product of the bias vectors for the `i`-th
+            population pair, scaled by the `k`-th element of `alpha1`.
+
+        Example
+        -------
+        Given:
+        - self.pop = ['pop1', 'pop2']
+        - self.bias = {'pop1': np.array([1, 2]), 'pop2': np.array([3, 4])}
+        - self.alphas = {'alpha_1': np.array([0.5, 1.5])}
         
-        Cell_combs = []
+        Calling `Cells_DD()` will compute the combinations, outer products, and return
+        the results in a 3D NumPy array.
+        """
+        
         if which_pop == 'default':
-            which_pop = list(it.combinations_with_replacement(self.pop,2))
-        else:
-            which_pop = self.pop
+            which_pop = list(it.combinations_with_replacement(self.pop, 2))
+        
+        alpha1 = self.alphas['alpha_1']
+        num_combs = len(which_pop)
+        bias_length = len(self.bias[self.pop[0]])
+        
+        # Precompute the upper triangle mask
+        triu_idx = np.triu_indices(bias_length)
+        
+        # Initialize an array to hold the results
+        Cell_combs = np.zeros((num_combs, len(triu_idx[0]), len(alpha1)))
         
         for i, comb in enumerate(which_pop):
             b1 = self.bias[comb[0]]
             b2 = self.bias[comb[1]]
-        
-            product = np.outer(b1,b2).flatten()
-            # Create a mask for the upper triangle including the diagonal
-            mask = np.triu(np.ones_like(product), k=0).astype(bool)
-            factor_z = product[mask]
             
-            alpha1 = self.alphas['alpha_1']
+            # Compute the outer product and apply the upper triangle mask
+            product = np.outer(b1, b2)[triu_idx]
             
-            Cell_combs += [alpha1[np.newaxis,:] * factor_z[:,np.newaxis]]
+            # Compute the final result using broadcasting
+            Cell_combs[i] = alpha1[np.newaxis, :] * product[:, np.newaxis]
         
-        return  Cell_combs
+        return Cell_combs

@@ -33,9 +33,9 @@ class Signals(cosmo_quantities):
     
     def Cells_DD(self, which_pop = 'default'):
         """
-        Compute and return the Cell's for the different combinations of populations at different redshifts.
+        Compute and return the Density-Density Cell's for the different combinations of populations at different redshifts.
 
-        This method computes Cell's using the bias vectors of two populations,
+        This method computes the Cell's using the bias vectors of two populations,
         calculates the outer product of each pair of bias vectors, and then applies an upper
         triangle mask to these products, removing repeated elements. 
         Finally, it scales the resulting values by the corresponding alpha integral and stores them in an output array.
@@ -92,5 +92,66 @@ class Signals(cosmo_quantities):
             
             # Compute the final result using broadcasting
             Cell_combs[i] = alpha1[np.newaxis, :] * product[:, np.newaxis]
+        
+        return Cell_combs
+    
+    def Cells_RR(self, which_pop = [['B','B']]):
+        """
+        Compute and return the RSD-RSD Cell's at different redshifts.
+
+        This method computes the Cell's,
+        calculates the outer product for each redshift bin, and then applies an upper
+        triangle mask to these products, removing repeated elements. 
+        Finally, it scales the resulting values by the corresponding alpha integral and stores them in an output array.
+
+        Parameters
+        ----------
+        which_pop : str or list of tuples, optional
+            Specifies the population pairs for which to compute the Cell combinations.
+            If 'default', uses all combinations with replacement of `self.pop` (default is 'default').
+
+        Returns
+        -------
+        np.ndarray
+            A 3D NumPy array of shape (num_combs, num_z_combinations, alpha_length),
+            where:
+            - `num_combs` is the number of population pairs.
+            - `num_z_combinations` is the number of redshift bin combinations.
+            - `alpha_length` is the length of the alpha integral (`self.alphas['alpha_1']`).
+
+            Each element `Cell_combs[i, j, k]` represents the scaled value of the `j`-th element
+            in the upper triangle of the outer product of the bias vectors for the `i`-th
+            population pair, scaled by the `k`-th element of `alpha1`.
+
+        Example
+        -------
+        Given:
+        - self.pop = ['pop1', 'pop2']
+        - self.bias = {'pop1': np.array([1, 2]), 'pop2': np.array([3, 4])}
+        - self.alphas = {'alpha_1': np.array([0.5, 1.5])}
+        
+        Calling `Cells_RR()` will compute the combinations, outer products, and return
+        the results in a 3D NumPy array.
+        """
+        
+        alpha2 = self.alphas['alpha_2']
+        num_combs = len(which_pop)
+        z_length = len(self.z)
+        
+        Ghat = self.calculate_G() * self.s8(self.z)
+        
+        # Precompute the upper triangle mask
+        triu_idx = np.triu_indices(z_length)
+        
+        # Initialize an array to hold the results
+        Cell_combs = np.zeros((num_combs, len(triu_idx[0]), len(alpha2)))
+        
+        for i,_ in enumerate(which_pop):
+
+            # Compute the outer product and apply the upper triangle mask
+            product = -Ghat**2
+            
+            # Compute the final result using broadcasting
+            Cell_combs[i] = alpha2[np.newaxis, :] * product[:, np.newaxis]
         
         return Cell_combs

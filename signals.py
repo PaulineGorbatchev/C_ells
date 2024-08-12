@@ -75,10 +75,10 @@ class Signals(cosmo_quantities):
         
         alpha1 = self.alphas['alpha_1']
         num_combs = len(which_pop)
-        bias_length = len(self.bias[self.pop[0]])
+        z_length = len(self.z)
         
         # Precompute the upper triangle mask
-        triu_idx = np.triu_indices(bias_length)
+        triu_idx = np.triu_indices(z_length)
         
         # Initialize an array to hold the results
         Cell_combs = np.zeros((num_combs, len(triu_idx[0]), len(alpha1)))
@@ -138,7 +138,7 @@ class Signals(cosmo_quantities):
         num_combs = len(which_pop)
         z_length = len(self.z)
         
-        Ghat = self.calculate_G() * self.s8(self.z)
+        Ghat = self.calculate_G() * self.s8(self.z) / self.calculate_D1()
         
         # Precompute the upper triangle mask
         triu_idx = np.triu_indices(z_length)
@@ -149,7 +149,7 @@ class Signals(cosmo_quantities):
         for i,_ in enumerate(which_pop):
 
             # Compute the outer product and apply the upper triangle mask
-            product = -Ghat**2
+            product = -np.outer(Ghat, Ghat)[triu_idx]
             
             # Compute the final result using broadcasting
             Cell_combs[i] = alpha2[np.newaxis, :] * product[:, np.newaxis]

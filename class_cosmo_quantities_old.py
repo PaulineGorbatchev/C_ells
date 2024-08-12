@@ -58,11 +58,11 @@ class cosmo_quantities:
             dz = self.z[1] - self.z[0]
             f_etap = np.array([derivative(self.calculate_D1_single, zi, dx=dz) for zi in self.z])
             D1 = self.calculate_D1()
-            f = f_etap * (-1) * (1 + self.z) / D1
+            f = f_etap * (-1) * (1 + np.array(self.z)) / D1
         else:
             f_etap = derivative(self.calculate_D1_single, self.z, dx=1e-6)
             D1 = self.calculate_D1()
-            f = f_etap * (-1) * (1 + self.z) / D1
+            f = f_etap * (-1) * (1 + np.array(self.z)) / D1
         return f
 
     def calculate_G(self):

@@ -15,6 +15,8 @@ class cosmo_quantities:
         self.Omega_m = Omega_m
         self.H_0 = H_0
         self.Omega_Lambda = Omega_Lambda
+        
+        self.comoving_distance = np.vectorize(self.comoving_distance_)
 
     def calculate_Hubble(self):
         H = self.H_0 * np.sqrt(self.Omega_m * (1 + self.z) ** 3 + self.Omega_Lambda)
@@ -35,6 +37,16 @@ class cosmo_quantities:
 
         H_cal_dot = derivative(Hubble_cal_wrapper, self.z, dx=1e-6)
         return H_cal_dot
+    
+    def comoving_distance_(self, z):
+        Oml = 1 - self.Omega_m
+        # Comoving distance
+        result = quad(lambda x: 1/(self.H_0*np.sqrt(self.Omega_m * (1+x)**3 + Oml)), 0, z)
+        value=result[0]
+        return np.array(value)
+    
+    def calculate_comoving_distance(self):
+        return self.comoving_distance(self.z)
 
     def calculate_integrand(self, x):
         H = self.H_0 * np.sqrt(self.Omega_m * (1 + x) ** 3 + self.Omega_Lambda)

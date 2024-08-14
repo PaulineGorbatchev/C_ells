@@ -466,13 +466,13 @@ class alphas:
         beta = 1 - 2/(chi * H_cal) - (H_cal_dot/H_cal**2)
         I = my_cosmo.calculate_I()
 
-        result =  res * ((1 / H_cal_star) * (H_cal * G * sigma_8_1 / D1) * ((bias_B * sigma_8_1 + bias_F * sigma_8_1) - (bias_B * sigma_8_1 * beta + bias_F * sigma_8_1 * beta)))**(-1)
+        result =  res * ((1 / H_cal_star) * (H_cal * G * sigma_8_1 / D1) * ((self.bias_B * sigma_8_1 + self.bias_F * sigma_8_1) - (self.bias_B * sigma_8_1 * beta + self.bias_F * sigma_8_1 * beta)))**(-1)
 
         delta_z = 0.01
         #G_dot_hat = - (1 / (12 * delta_z)) * (-G(self.z + 2 * delta_z) * sigma_8_1 / D1 + 8 * G(self.z + delta_z) * sigma_8_1 / D1 - 8 * G(self.z - delta_z) * sigma_8_1 / D1 + G(self.z - 2 * delta_z) * sigma_8_1 / D1)
         G_dot_hat = H_cal * my_cosmo.calculate_G_dot(0.01) * sigma_8_2 / D1_star
 
-        res1 = result / H_cal_star * (((bias_B * sigma_8_1 + bias_F * sigma_8_1) * ((3 * H_cal * I * sigma_8_1 / D1 * 2) - (H_cal_dot * (G * sigma_8_1 / D1) + H_cal * G_dot_hat)/ H_cal) - (H_cal * G * sigma_8_1 / D1) * (bias_B * sigma_8_1 * beta + bias_F * sigma_8_1 * beta)))
+        res1 = result / H_cal_star * (((self.bias_B * sigma_8_1 + self.bias_F * sigma_8_1) * ((3 * H_cal * I * sigma_8_1 / D1 * 2) - (H_cal_dot * (G * sigma_8_1 / D1) + H_cal * G_dot_hat)/ H_cal) - (H_cal * G * sigma_8_1 / D1) * (self.bias_B * sigma_8_1 * beta + self.bias_F * sigma_8_1 * beta)))
 
         return result, res1
 

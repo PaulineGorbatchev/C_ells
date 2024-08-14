@@ -460,9 +460,9 @@ class alphas:
         D1 = my_cosmo.calculate_D1()
         D1_star = my_cosmo.calculate_D1_single(10)
         H_cal_star = my_cosmo.calculate_Hubble_cal_star()
-        H_cal = my_cosmo.calculate_Hubble_cal(z)
+        H_cal = my_cosmo.calculate_Hubble_cal()
         H_cal_dot = my_cosmo.calculate_Hubble_cal_dot()
-        chi = results1.comoving_radial_distance(z)
+        chi = results1.comoving_radial_distance(self.z)
         beta = 1 - 2/(chi * H_cal) - (H_cal_dot/H_cal**2)
         I = my_cosmo.calculate_I()
 
@@ -610,9 +610,9 @@ class alphas:
         G = my_cosmo.calculate_G()
         D1 = my_cosmo.calculate_D1()
         H_cal_star = my_cosmo.calculate_Hubble_cal_star()
-        H_cal = my_cosmo.calculate_Hubble_cal(z)
+        H_cal = my_cosmo.calculate_Hubble_cal()
         H_cal_dot = my_cosmo.calculate_Hubble_cal_dot()
-        chi = results1.comoving_radial_distance(z)
+        chi = results1.comoving_radial_distance(self.z)
         beta = 1 - 2/(chi * H_cal) - (H_cal_dot/H_cal**2)
 
         result = res * ((beta+beta)*(H_cal * G ** 2 * sigma_8_1 ** 2 / D1 ** 2) / H_cal_star)**(-1)

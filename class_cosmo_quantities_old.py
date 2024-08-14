@@ -36,7 +36,9 @@ class cosmo_quantities:
         #    return self.calculate_Hubble_cal(z)
 
         #H_cal_dot = derivative(Hubble_cal_wrapper, self.z, dx=1e-6)
-        H_cal_dot = (1/2) * self.H_0 * (self.Omega_m*(1+self.z) + 2/(1+self.z)**2*(1-self.Omega_m))
+        
+        H_cal_dot = - (self.H_0**2 / 2) *  (self.Omega_m*(1+self.z) - 2*(1-self.Omega_m)/(1+self.z)**2)
+        
         return H_cal_dot
     
     def comoving_distance_(self, z):

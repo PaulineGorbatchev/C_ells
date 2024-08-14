@@ -613,7 +613,7 @@ class alphas:
         H_cal = my_cosmo.calculate_Hubble_cal(z)
         H_cal_dot = my_cosmo.calculate_Hubble_cal_dot()
         chi = results1.comoving_radial_distance(z)
-        beta = 1 - (2/chi * H_cal) - (H_cal_dot/H_cal**2)
+        beta = 1 - 2/(chi * H_cal) - (H_cal_dot/H_cal**2)
 
         result = res * ((beta+beta)*(H_cal * G ** 2 * sigma_8_1 ** 2 / D1 ** 2) / H_cal_star)**(-1)
 

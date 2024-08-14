@@ -22,8 +22,8 @@ class cosmo_quantities:
         H = self.H_0 * np.sqrt(self.Omega_m * (1 + self.z) ** 3 + self.Omega_Lambda)
         return H
 
-    def calculate_Hubble_cal(self, z):
-        H_cal = (self.H_0 / (1 + z)) * np.sqrt(self.Omega_m * (1 + z) ** 3 + self.Omega_Lambda)
+    def calculate_Hubble_cal(self):
+        H_cal = (self.H_0 / (1 + self.z)) * np.sqrt(self.Omega_m * (1 + self.z) ** 3 + self.Omega_Lambda)
         return H_cal
 
 

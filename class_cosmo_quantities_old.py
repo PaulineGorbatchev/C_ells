@@ -25,7 +25,7 @@ class cosmo_quantities:
 
     def calculate_Hubble_cal(self):
         # In units of Mpc/km/s
-        H_cal = (self.H_0 / (1 + self.z)) * np.sqrt(self.Omega_m * (1 + self.z) ** 3 + self.Omega_Lambda)
+        H_cal = (self.H_0 / (1 + np.array(self.z))) * np.sqrt(self.Omega_m * (1 + np.array(self.z)) ** 3 + self.Omega_Lambda)
         return H_cal
 
 
@@ -107,14 +107,17 @@ class cosmo_quantities:
                 -func(z + 2 * delta_z) + 8 * func(z + delta_z) - 8 * func(z - delta_z) + func(z - 2 * delta_z))
 
     def calculate_G_dot(self, delta_z=1e-6):
+        # D: we need to revisit the calculation of G_dot when using more than one redshift
+        # D: Output is wrong when using more than one redshift
         def G_func(z):
+            # D: I think the issue is here. calculate_f() gives a vector.
             return self.calculate_D1_single(z) * self.calculate_f()
 
         if isinstance(self.z, (list, np.ndarray)):
             G_dot = np.array([self.derivative_5_point_stencil(G_func, zi, delta_z) for zi in self.z])
         else:
-            G_dot = self.derivative_5_point_stencil(G_func, self.z, delta_z)
-        return -(1+self.z) * self.calculate_Hubble_cal() * G_dot
+            G_dot = np.array([self.derivative_5_point_stencil(G_func, self.z, delta_z)])
+        return G_dot
 
     def calculate_Omega_mz(self):
         Omega_mz = (self.Omega_m * (1 + self.z) ** 3) / (self.Omega_m * (1 + self.z) ** 3 + (1 - self.Omega_m))

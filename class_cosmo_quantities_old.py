@@ -19,10 +19,12 @@ class cosmo_quantities:
         self.comoving_distance = np.vectorize(self.comoving_distance_)
 
     def calculate_Hubble(self):
+        # In units of Mpc/km/s
         H = self.H_0 * np.sqrt(self.Omega_m * (1 + self.z) ** 3 + self.Omega_Lambda)
         return H
 
     def calculate_Hubble_cal(self):
+        # In units of Mpc/km/s
         H_cal = (self.H_0 / (1 + self.z)) * np.sqrt(self.Omega_m * (1 + self.z) ** 3 + self.Omega_Lambda)
         return H_cal
 
@@ -41,11 +43,12 @@ class cosmo_quantities:
         
         return H_cal_dot
     
-    def comoving_distance_(self, z):
+    def comoving_distance_(self, z, clight=299792.458):
+        # In units of Mpc
         Oml = 1 - self.Omega_m
         # Comoving distance
         result = quad(lambda x: 1/(self.H_0*np.sqrt(self.Omega_m * (1+x)**3 + Oml)), 0, z)
-        value=result[0]
+        value=clight*result[0]
         return np.array(value)
     
     def calculate_comoving_distance(self):

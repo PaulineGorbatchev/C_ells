@@ -40,7 +40,8 @@ class cosmo_quantities:
         #H_cal_dot = derivative(Hubble_cal_wrapper, self.z, dx=1e-6)
         
         H_cal_dot = - (self.H_0**2 / 2) *  (self.Omega_m*(1+self.z) - 2*(1-self.Omega_m)/(1+self.z)**2)
-        
+        #D: This is the dot derivative of the comoving Hubble parameter. Above formula computes just the z-derivative.
+        #D: I prefer to have analytical expressions when possible.       
         return H_cal_dot
     
     def comoving_distance_(self, z, clight=299792.458):
@@ -48,7 +49,7 @@ class cosmo_quantities:
         Oml = 1 - self.Omega_m
         # Comoving distance
         result = quad(lambda x: 1/(self.H_0*np.sqrt(self.Omega_m * (1+x)**3 + Oml)), 0, z)
-        value=clight*result[0]
+        value = clight * result[0]
         return np.array(value)
     
     def calculate_comoving_distance(self):
@@ -72,6 +73,7 @@ class cosmo_quantities:
         return D1
 
     def calculate_f(self):
+        # D: Careful here. This computes the derivative with respect to z of D1, not the dot derivative.
         if isinstance(self.z, (list, np.ndarray)):
             dz = self.z[1] - self.z[0]
             f_etap = np.array([derivative(self.calculate_D1_single, zi, dx=dz) for zi in self.z])
@@ -107,10 +109,11 @@ class cosmo_quantities:
                 -func(z + 2 * delta_z) + 8 * func(z + delta_z) - 8 * func(z - delta_z) + func(z - 2 * delta_z))
 
     def calculate_G_dot(self, delta_z=1e-6):
+        # As it is now, this computes the derivative of G with respect to z, not the dot derivative.
         # D: we need to revisit the calculation of G_dot by means of the 5-pt stencil when using more than one redshift
-        # D: Output is wrong when using more than one redshift
+        # Output is wrong when using more than one redshift
         def G_func(z):
-            # D: I think the issue is here. calculate_f() gives a vector.
+            # D: I think the issue is here. calculate_f() gives a vector. Then, G_func is a vector * value of D1 
             return self.calculate_D1_single(z) * self.calculate_f()
 
         if isinstance(self.z, (list, np.ndarray)):

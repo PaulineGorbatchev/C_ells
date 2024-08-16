@@ -114,7 +114,7 @@ class cosmo_quantities:
             G_dot = np.array([self.derivative_5_point_stencil(G_func, zi, delta_z) for zi in self.z])
         else:
             G_dot = self.derivative_5_point_stencil(G_func, self.z, delta_z)
-        return G_dot
+        return -(1+self.z) * self.calculate_Hubble_cal() * G_dot
 
     def calculate_Omega_mz(self):
         Omega_mz = (self.Omega_m * (1 + self.z) ** 3) / (self.Omega_m * (1 + self.z) ** 3 + (1 - self.Omega_m))

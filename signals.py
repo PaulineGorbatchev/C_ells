@@ -212,11 +212,11 @@ class Signals(cosmo_quantities):
             b1 = self.bias[comb[0]]
             b2 = self.bias[comb[1]]
             
-            # Compute the sum of biases
-            bias_sum = b1 + b2
-            
             # Compute the outer product and apply the upper triangle mask
-            product = - np.outer(bias_sum, Ghat)[triu_idx]
+            product_RD = - np.outer(b1, Ghat)[triu_idx]
+            product_DR = - np.outer(Ghat, b2)[triu_idx]
+            
+            product = product_RD + product_DR
             
             # Compute the final result using broadcasting
             Cell_combs[i] = alpha3[np.newaxis, :] * product[:, np.newaxis]

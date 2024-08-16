@@ -107,7 +107,7 @@ class cosmo_quantities:
                 -func(z + 2 * delta_z) + 8 * func(z + delta_z) - 8 * func(z - delta_z) + func(z - 2 * delta_z))
 
     def calculate_G_dot(self, delta_z=1e-6):
-        # D: we need to revisit the calculation of G_dot when using more than one redshift
+        # D: we need to revisit the calculation of G_dot by means of the 5-pt stencil when using more than one redshift
         # D: Output is wrong when using more than one redshift
         def G_func(z):
             # D: I think the issue is here. calculate_f() gives a vector.

@@ -289,11 +289,8 @@ class Signals(cosmo_quantities):
             beta1 = 1 - 2/(chi * Hz) - Hzdot/(Hz**2)
             beta2 = 1 - 2/(chi * Hz) - Hzdot/(Hz**2)
             
-            # Compute the sum of biases
-            bias_sum = b1 + b2
-            
             # Compute the outer product and apply the upper triangle mask
-            product = - np.outer(bias_sum, Ghat)[triu_idx]
+            product = - np.outer(b1, Ghat)[triu_idx]
             
             # Compute the final result using broadcasting
             Cell_combs[i] = alpha4[np.newaxis, :] * product[:, np.newaxis]

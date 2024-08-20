@@ -266,9 +266,9 @@ class Signals(cosmo_quantities):
         
         alpha4 = self.alphas['alpha_4']
         Ghat = self.calculate_G() * self.s8(self.z) / self.calculate_D1()
-        D1star = self.calculate_D1_single(10.)
         Hz = self.calculate_Hubble_cal(self.z)
-        Hzstar = self.calculate_Hubble_cal(10.)
+        Ghat_dot = -(1+self.z) * Hz * self.calculate_G_dot() # This is incorrect. Review the derivative_5_point_stencil method.
+        Evolz = Hz / self.calculate_Hubble_cal(10.)
         Hzdot = self.calculate_Hubble_cal_dot()
         chi = self.calculate_comoving_distance()
         Ihat = self.calculate_I() * self.s8(self.z) / self.calculate_D1()
@@ -286,12 +286,23 @@ class Signals(cosmo_quantities):
             b1 = self.bias[comb[0]]
             b2 = self.bias[comb[1]]
             
+            # Neglect magnification and evolution biases
             beta1 = 1 - 2/(chi * Hz) - Hzdot/(Hz**2)
             beta2 = 1 - 2/(chi * Hz) - Hzdot/(Hz**2)
             
             # Compute the outer product and apply the upper triangle mask
-            product = - np.outer(b1, Ghat)[triu_idx]
+            productDI = np.outer(b1, 3/2 * Evolz * Ihat)[triu_idx]
+            productDG = - np.outer(b1, Evolz * beta2 * Ghat)[triu_idx]
+            productDGdot = - np.outer(b1, (Hzdot/Hz) * Ghat + Ghat_dot)[triu_idx]
             
+            productID = np.outer(3/2 * Evolz * Ihat, b2)[triu_idx]
+            productGD = - np.outer(Evolz * beta1 * Ghat, b2)[triu_idx]
+            productGdotD = - np.outer((Hzdot/Hz) * Ghat + Ghat_dot, b2)[triu_idx]
+            
+            productDRel = productDI + productDG + productDGdot
+            productRelD = productID + productGD + productGdotD
+            
+            product = productDRel + productRelD
             # Compute the final result using broadcasting
             Cell_combs[i] = alpha4[np.newaxis, :] * product[:, np.newaxis]
         

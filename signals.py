@@ -372,8 +372,8 @@ class Signals(cosmo_quantities):
             beta2 = 1 - 2/(chi * Hz) - Hzdot/(Hz**2)
             
             # Compute the outer product and apply the upper triangle mask
-            productRRel = np.outer(beta1 * Ghat, Evolz * Ghat)[triu_idx]
-            productRelR = np.outer(Evolz * Ghat, beta2 * Ghat)[triu_idx]
+            productRRel = np.outer( Ghat, Evolz * beta1 * Ghat)[triu_idx]
+            productRelR = np.outer(Evolz * beta2 * Ghat,  Ghat)[triu_idx]
 
             product = productRRel + productRelR
             

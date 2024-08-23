@@ -121,6 +121,18 @@ class cosmo_quantities:
         else:
             G_dot = np.array([self.derivative_5_point_stencil(G_func, self.z, delta_z)])
         return G_dot
+    
+    def calculate_G_dot_(self, delta_z = 0.05):
+        # Preliminary version. Interpolates G and then computes the derivative.
+        # We have to think on the z-binning. We need to compute the derivative at the center of the bin.
+        # Here we are extrapolating to obtain the derivative at the edges. This might not be fully correct.
+        
+        G_arr = self.calculate_G()
+        G_f = interpolate.interp1d(self.z, G_arr, kind='cubic', fill_value='extrapolate')
+        pref = - (1+np.array(self.z)) * self.calculate_Hubble_cal() / (12 * delta_z)
+               
+        G_dot = pref * (-G_f(np.array(self.z) + 2*delta_z) + 8*G_f(np.array(self.z) + delta_z) - 8*G_f(np.array(self.z) - delta_z) + G_f(np.array(self.z) - 2*delta_z))
+        return G_dot
 
     def calculate_Omega_mz(self):
         Omega_mz = (self.Omega_m * (1 + self.z) ** 3) / (self.Omega_m * (1 + self.z) ** 3 + (1 - self.Omega_m))

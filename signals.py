@@ -266,9 +266,16 @@ class Signals(cosmo_quantities):
         
         alpha4 = self.alphas['alpha_4']
         Ghat = self.calculate_G() * self.s8(self.z) / self.calculate_D1()
-        Hz = self.calculate_Hubble_cal(self.z)
-        Ghat_dot = -(1+self.z) * Hz * self.calculate_G_dot() # This is incorrect. Review the derivative_5_point_stencil method.
-        Hzstar = self.calculate_Hubble_cal(10.)
+        Hz = self.calculate_Hubble_cal()
+        
+        #Ghat_dot = -(1+self.z) * Hz * self.calculate_G_dot() # This is incorrect. Review the derivative_5_point_stencil method.
+        
+        if isinstance(self.z, (list, np.ndarray)):
+            Ghat_dot = self.calculate_G_dot_()
+        else:
+            Ghat_dot = -(1+self.z) * Hz * self.calculate_G_dot()
+            
+        Hzstar = self.calculate_Hubble_cal_star()
         Evolz = Hz / Hzstar
         Hzdot = self.calculate_Hubble_cal_dot()
         chi = self.calculate_comoving_distance()
@@ -352,8 +359,8 @@ class Signals(cosmo_quantities):
         
         alpha5 = self.alphas['alpha_5']
         Ghat = self.calculate_G() * self.s8(self.z) / self.calculate_D1()
-        Hz = self.calculate_Hubble_cal(self.z)
-        Evolz = Hz / self.calculate_Hubble_cal(10.)
+        Hz = self.calculate_Hubble_cal()
+        Evolz = Hz / self.calculate_Hubble_cal_star()
         Hzdot = self.calculate_Hubble_cal_dot()
         chi = self.calculate_comoving_distance()
    

@@ -39,7 +39,7 @@ class cosmo_quantities:
 
         #H_cal_dot = derivative(Hubble_cal_wrapper, self.z, dx=1e-6)
         
-        H_cal_dot = - (self.H_0**2 / 2) *  (self.Omega_m*(1+self.z) - 2*(1-self.Omega_m)/(1+self.z)**2)
+        H_cal_dot = - (self.H_0**2 / 2) *  (self.Omega_m*(1+np.array(self.z)) - 2*(1-self.Omega_m)/(1+np.array(self.z))**2)
         #D: This is the dot derivative of the comoving Hubble parameter. Above formula computes just the z-derivative.
         #D: I prefer to have analytical expressions when possible.       
         return H_cal_dot
@@ -135,7 +135,7 @@ class cosmo_quantities:
         return G_dot
 
     def calculate_Omega_mz(self):
-        Omega_mz = (self.Omega_m * (1 + self.z) ** 3) / (self.Omega_m * (1 + self.z) ** 3 + (1 - self.Omega_m))
+        Omega_mz = (self.Omega_m * (1 + np.array(self.z)) ** 3) / (self.Omega_m * (1 + np.array(self.z)) ** 3 + (1 - self.Omega_m))
         return Omega_mz
 
     def calculate_I(self):

@@ -123,6 +123,13 @@ class cosmo_quantities:
         return G_dot
     
     def calculate_G_dot_(self, delta_z = 0.05):
+        """
+        Calculates the derivative of G with respect to conformal time.
+        Parameters:
+        - delta_z (float): The redshift interval used for numerical differentiation. Default is 0.05.
+        Returns:
+        - G_dot (numpy.ndarray): The derivative of G with respect to conformal time.
+        """
         # Preliminary version. Interpolates G and then computes the derivative.
         # We have to think on the z-binning. We need to compute the derivative at the center of the bin.
         # Here we are extrapolating to obtain the derivative at the edges. This might not be fully correct.

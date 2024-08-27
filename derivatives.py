@@ -6,6 +6,3 @@ Created on August 2024
 @author: dasobral
 
 """
-
-import numpy as np
- 

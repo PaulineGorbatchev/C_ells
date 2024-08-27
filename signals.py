@@ -1,3 +1,12 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on August 2024
+
+@author: dasobral
+
+"""
+
 import numpy as np
 import pickle as pkl
 import itertools as it

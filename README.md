@@ -14,7 +14,7 @@ Code structure (Currently in development):
 
 - derivatives.py: computes the derivatives (Note: analytic expressions).
 
-- covariance.py: computes the Covariance Matrix. 
+- covariance.py: computes the Covariance Matrix (Note: if existing a previous version it would be nice to build up from that one). 
 
 
  

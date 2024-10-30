@@ -371,9 +371,10 @@ class Signals(cosmo_quantities):
         Hz = self.calculate_Hubble_cal()
         Evolz = Hz / self.calculate_Hubble_cal_star()
         Hzdot = self.calculate_Hubble_cal_dot()
+        Hzstar = self.calculate_Hubble_cal_star()
         chi = self.calculate_comoving_distance()
+        Ihat = self.calculate_I() * self.s8(self.z) / self.calculate_D1()
    
-        
         num_combs = len(which_pop)
         z_length = len(self.z)
         
@@ -389,8 +390,8 @@ class Signals(cosmo_quantities):
             beta2 = 1 - 2/(chi * Hz) - Hzdot/(Hz**2)
             
             # Compute the outer product and apply the upper triangle mask
-            productRRel = np.outer( Ghat, Evolz * beta1 * Ghat)[triu_idx]
-            productRelR = np.outer(Evolz * beta2 * Ghat,  Ghat)[triu_idx]
+            productRRel = - np.outer(Ghat, Evolz * Ihat)[triu_idx] + np.outer( Ghat, Evolz * beta1 * Ghat)[triu_idx] + np.outer(Ghat/Hzstar, ((Hzdot/Hz) * Ghat + self.calculate_G_dot()))[triu_idx]
+            productRelR = - np.outer(Evolz * Ihat, Ghat)[triu_idx] + np.outer(Evolz * beta2 * Ghat,  Ghat)[triu_idx] + np.outer(((Hzdot/Hz) * Ghat + self.calculate_G_dot()), Ghat/Hzstar)[triu_idx]
 
             product = productRRel + productRelR
             
